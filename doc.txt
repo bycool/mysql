@@ -1,0 +1,89 @@
+mysql source install to rhel6.9:
+
+下载:mysql-5.6.45.tar.gz
+解压:tar xvf mysql-5.6.45.tar.gz
+
+安装: yum install -y ncurses-devel llibaio-devel
+	  yum install -y cmake
+
+添加用户:
+	  useradd mysql -s /sbin/nologin -M
+
+创建相关目录：
+	mkdir /application/mysql-5.6.45 -p
+	mkdir /application/mysql-5.6.45/data
+	mkdir /application/mysql-5.6.45/tmp/
+
+
+编译:
+	cmake . 
+	-DCMAKE_INSTALL_PREFIX=/application/mysql-5.6.38 \                  # mysql程序编译完之后安装的位置
+	-DMYSQL_DATADIR=/application/mysql-5.6.38/data \                    # 数据存放的位置
+	-DMYSQL_UNIX_ADDR=/application/mysql-5.6.38/tmp/mysql.sock \        # socket文件存放的位置
+	-DDEFAULT_CHARSET=utf8 \                                            # 使用utf8字符集
+	-DDEFAULT_COLLATION=utf8_general_ci \                               # 校验规则
+	-DWITH_EXTRA_CHARSETS=all \                                         # 使用其它额外的字符集
+	-DWITH_INNOBASE_STORAGE_ENGINE=1 \                                  # 支持存储引擎
+	-DWITH_FEDERATED_STORAGE_ENGINE=1 \
+	-DWITH_BLACKHOLE_STORAGE_ENGINE=1 \
+	-DWITHOUT_EXAMPLE_STORAGE_ENGINE=1 \                                # 禁用存储引擎
+	-DWITH_ZLIB=bundled \                                               # 启用zlib库支持
+	-DWITH_SSL=bundled \                                                # 启用ssl库支持(安全套接层)
+	-DENABLED_LOCAL_INFILE=1 \                                          # 启用本地数据导入支持
+	-DWITH_EMBEDDED_SERVER=1 \                                          # 编译嵌入式服务器支持
+	-DENABLE_DOWNLOADS=1 \                                              # mysql5.6支持了google的c++mock框架了，允许下载，否则会安装报错
+	-DWITH_DEBUG=1                                                      # 禁用debug（默认为禁用）
+
+编译：
+	make
+安装：
+	make install
+
+做个软链接：
+	ln -s /application/mysql-5.6.45/ /application/mysql
+
+拷贝配置文件：
+	cp support-files/my-default.cnf /etc/my.cnf
+
+拷贝mysql启动脚本
+	cp support-files/mysql.server /etc/init.d/mysqld
+	chmod 700 /etc/init.d/mysqld
+
+修改目录权限：
+	chown -R mysql.mysql /application/mysql/
+
+切换目录：
+	cd /application/mysql/scripts/
+
+初始化mysql:
+	./mysql_install_db --basedir=/application/mysql/ --datadir=/application/mysql/data --user=mysql
+
+修改环境变量：
+	echo 'PATH=/application/mysql/bin/:$PATH' >>/etc/profile
+	source /etc/profile
+
+启动:
+	/etc/init.d/mysqld start
+
+	/etc/init.d/mysqld start
+	Starting MySQL.Logging to '/application/mysql-5.6.45/data/localhost.localdomain.err'.
+	.. SUCCESS! 
+	成功
+
+设置mysql密码：
+	mysqladmin -uroot password '123456'
+
+设置子启动：
+	chkconfig mysqld on
+
+mysql登录： （暂略）
+	mysql -uuser -ppassword -Ssocket -hhost
+
+
+
+启动客户端前声明环境变量： mysql启动debug
+	export MYSQL_DEBUG=d:t:O,/tmp/client.trace
+开启debuga
+
+mysqld启动debug
+所有工作完成之后，启动系统，如果想开调试模式，启动的时候要加参数：/usr/local/mysql/support-files/mysql.server start --debug --console &
