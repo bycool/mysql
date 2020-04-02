@@ -1,3 +1,4 @@
+第一章
 一，核心模块间的互换
 	1，初始化模块
 		当命令行启动服务器时(service mysqld start)，初始化模块结果控制权：
@@ -38,3 +39,60 @@
 		check_connection() 				@sql/sql_connect.cc
 		acl_check_host()   				@sql/sql_acl.cc
 			create_random_string()		@sql/password.c
+		acl_getroot()                   @sql/sql_acl.cc  获取未验证用户的证书，限制资源检测
+
+	6，访问控制模块
+		访问控制模块检验客户端用户是否具有足够权限来执行所请求的操作。
+		check_grant()			@sql/sql_acl.cc
+		check_table_access()	@sql/sql_parse.cc
+		check_grant_column()	@sql/sql_acl.cc
+		acl_get()				@sql/sql_acl.cc
+
+	7，分析器
+		解析器负责解析查询并生成解析树。入口在sql/sql_parse.cc mysql_parse().
+
+	8，命令调度器
+		命令调度器负责将请求转发给知道如何处理这些请求的较低层次的模块。
+		do_command()
+		dispatch_command()
+
+	9，查询高速缓存模块
+		Query_cache::store_query()
+		Query_cache::send_result_to_client()
+
+	10，优化器
+		优化器负责创建回答查询的最佳策略，并执行该策略，向客户端提交结果。
+
+	11，表管理器
+		表管理器负责创建，读取和修改定义文件(.frm扩展名),维护表描述符高速缓存(即表高速缓存)，以及管理表锁。
+
+	12，表修改模块
+		这一模块集负责诸如表创建，删除，重命名，移除，更新或插入之类的操作。
+
+	13，表维护模块
+		表维护模块负责表维护操作，诸如检查，修理，备份，恢复，优化(碎片整理)及解析(更新键分布统计)。
+
+	14，状态报告模块
+		状态报告模块负责回答关于服务器配置设置，新跟跟踪变量，表结构信息，复制进度，表高速缓存状态等的查询。
+
+	15，抽象存储引擎接口(表处理器)
+		本模块实现了一个名为handler的凑像类和一个名为handlerton的结构
+
+	16，存储引擎的实现(mylSAM,innoDB,MEMORY, berkeley DB)
+		每个存储引擎都通过扩展前面提过的handler类提供了一套操作标准接口。
+
+	17，日志记录模块
+		日志记录模块负责维护较高层次的(逻辑)日志。一个存储引擎可能会为了本身的目的而额外维护自己的低层次(物理或逻辑)日志，但日志记录模块却与此无关，存储引擎自己会负责完成。
+
+第三章 核心类，结构，变量及API
+	THD类定义线程描述符，其中包含一些与处理给定请求的线程相关的信息。
+	class THD {
+		THD::Statement.LEX *lex;  									//查询分析树的描述符
+		THD::Statement.CSET_STRING query_string; 					//查询的命令的文本
+		THD::Statement::Query_arena.Item *free_list;				//当前查询的所有分析树节点的链接列表。
+		THD::Statement::Query_arena.MEM_ROOT *mem_root;				//线程内存池
+		THD.NET net;												//客户端链接描述符
+		THD.Protocol *protocol;										//客户端/服务器通信协议描述符。
+		THD.HASH    user_vars;										//用于存储查询中使用的用户变量散列,例如:set @a:=31; select col1 from t1 where col2=@a;
+		
+	};
