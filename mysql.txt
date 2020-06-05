@@ -1,3 +1,4 @@
+day1:
 1, mysql -u root -p  //登录
 password:xxxxxx
 
@@ -59,4 +60,30 @@ mysql> show databases like 'my%';
 | mydatas        |
 | mysql          |
 +----------------+
+
+10,更新数据库
+	1，数据库名字不可衣修改
+	2，数据库的修改仅限库选项：字符集和校对集(校对集依赖字符集)
+
+	操作:
+	alter database database_file [库选项]
+	charset/character set [=] 字符集
+	collate 校对集
+
+	alter database mydatas charset gbk;
+
+11,删除数据库
+	drop database database_name;
+
+12,表操作
+	表和字段密不可分。
+
+	create table [if not exists] table_name(
+		字段名称 数据类型,
+		字段名称 数据类型  -- 最后一行不需要逗号
+	)[表选项];
+
+	if not exists: 如果表名不存在，那么就创建，否则不知型创建代码；检查功能
+	表选项:控制表的表现
+		
 
