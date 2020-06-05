@@ -85,5 +85,44 @@ mysql> show databases like 'my%';
 
 	if not exists: 如果表名不存在，那么就创建，否则不知型创建代码；检查功能
 	表选项:控制表的表现
-		
+	create table if not exists student( name varchar(10), gender varchar(10), number varchar(10), age int ) charset utf8;
+	1,隐式创建表
+		use database_name;
+		create table table_name(); 表归属于名为database_name的数据库
+	2,显式创建表
+		create table database_name.table_name();
+		这样可以给指定数据库添加表。
 
+	创建表之后发生了什么：
+	1，指定数据库下已经存在的表。
+	2，指定数据库的目录下出现与表名相同的文件。frm文件是表结构文件。ibd文件是表数据文件。
+
+13，查看表
+	show tables;  //查看当前数据库所有表。
+	show tables like 'pattern'   % 代表多个字符，: 代表单个字符。
+	例如：
+	show tables like 'he%';
+	+-------------------------+
+	| Tables_in_mydatas (he%) |
+	+-------------------------+
+	| hellow                  |
+	+-------------------------+
+
+	查看表创建语句:
+	show create table student\g;
+	mysql> show create table student\g
+	+---------+---------------------------+
+	| Table   | Create Table              |
+	+---------+---------------------------+
+	| student | CREATE TABLE `student` (
+	  `name` varchar(10) DEFAULT NULL,
+	  `gender` varchar(10) DEFAULT NULL,
+	  `number` varchar(10) DEFAULT NULL,
+	  `age` int(11) DEFAULT NULL
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8  |
+	+---------+---------------------------+
+	
+	查看表结构：
+	desc class;
+	describe class;
+	show culomns from class;
