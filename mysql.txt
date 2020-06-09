@@ -126,3 +126,48 @@ mysql> show databases like 'my%';
 	desc class;
 	describe class;
 	show culomns from class;
+
+14,修改数据表
+	修改表分为两部分：修改表本身，修改字段
+	1，重命名表：
+	   rename table tablename to new_tablename;
+	   修改表项：
+	   alter table student charset utf8;
+	   新增字段：
+	   alter table tablename add [column] colname type [属性][位置];
+			alter table student add column tid int first;
+	   修改字段
+	   alter table tablename modify colname 数据类型 [属性][位置];
+			alter table student modify tid char(10) after name;
+	   重命名字段：
+	   alter table student change gender sex char(20);
+	   删除字段： 如果字段已经存在数据，删除列时，数据也被清除.
+	   alter table student drop age;
+
+15,删除数据表
+	drop table student;
+	删除表时发生了什么：
+	1，表空间内指定的表被删除。
+	2，数据库对应的文件夹内的表同名文件被删除。
+
+16，新增数据
+	两种方案：
+	1，给全婊子端插入数据，不许要指定字段列表：要求数据的值出现的顺序必须与表中设计的字段出现的顺序一致：凡是非数值数据都需要使用引号（建议单引号）包裹。
+		insert into tabelname values(值列表)[,(值列表)];
+	 re: insert into student values(1, 'i2cas001', 'jim', 'femal'),(2, 'i3cas001', 'jam', 'mal');
+
+	2, 给部分字段插入数据，需要选定字段列表：字段列表出现的顺序与字段的顺序无关；但是值列表的顺序必须与选定的字段一致。
+		insert into tablename (字段列表) value (值列表);
+
+17,  查看数据
+	select */字段列表 from tablename [where 条件];
+	select * from student;
+
+18, 更新数据表
+	update tablename set 字段 = 值 [where 条件];
+
+19,删除数据表
+	删除是不可逆的
+	delete from tablename [where];
+
+
