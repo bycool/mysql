@@ -71,6 +71,7 @@ mysql> show databases like 'my%';
 	collate 校对集
 
 	alter database mydatas charset gbk;
+	show create database database_name; 可以查看数据库的创建语句，修改字符集后，创建语句也跟着变了。
 
 11,删除数据库
 	drop database database_name;
@@ -170,4 +171,34 @@ mysql> show databases like 'my%';
 	删除是不可逆的
 	delete from tablename [where];
 
+20 中文问题
+	字符的表示：计算机的二进制与字符的对应关系(字符集)
+	show variables like 'character_set%';
++--------------------------+-------------------------------------------+
+| Variable_name            | Value                                     |
++--------------------------+-------------------------------------------+
+| character_set_client     | utf8                                      | 客户端使用的字符集
+| character_set_connection | utf8                                      | 链接器使用的字符集
+| character_set_database   | utf8                                      | 当前数据库使用的字符集
+| character_set_filesystem | binary                                    |
+| character_set_results    | utf8                                      | 服务器输出结果使用字符集
+| character_set_server     | utf8                                      |
+| character_set_system     | utf8                                      |
+| character_sets_dir       | /application/mysql-5.6.45/share/charsets/ |
++--------------------------+-------------------------------------------+
+
+	set character_set_client = gbk; //修改相应参数
+	set names gdk; ==> set character_set_client=gbk; set character_set_connection=gbk; set character_set_results=gbk;
+
+21,校对集
+	校对集：数据比较的方式
+
+	校对集的三种格式：
+	_bin: binary,二进制比较，数据的二进制形式，按bit比较，从左往右比较，区分大小系。
+	_cs: case sensitive: 大小写敏感，区分大小写
+	_ci: case insensitice,大小写不敏感。
+
+	查看数据库所支持的所有校对集： show collation;
+
+	在select表时，需要排序时，会根据校对集的规则在大小写上进行排序。
 
